@@ -7,6 +7,7 @@ Test cases can be run with the following:
 """
 import os
 import logging
+import unittest
 from unittest import TestCase
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
@@ -121,6 +122,43 @@ class TestAccountService(TestCase):
             json=account.serialize(),
             content_type="test/html"
         )
-        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)   
 
-    # ADD YOUR TEST CASES HERE ...
+    def test_account_not_found(self):
+        """It should return 404_NOT_FOUND when account does not exist"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_read_an_account(self):
+        """It should Read an Account after creating it"""
+        # Create a new account
+        account_data = {
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "address": "123 Elm Street",
+            "phone_number": "555-1234",
+            "date_joined": "2023-01-01"
+        }
+        create_response = self.client.post(BASE_URL, json=account_data)
+        self.assertEqual(create_response.status_code, status.HTTP_201_CREATED)
+
+        # Get the account id from the response
+        created_account = create_response.get_json()
+        account_id = created_account["id"]
+
+        # Read the account using the generated id
+        read_response = self.client.get(f"{BASE_URL}/{account_id}")
+        self.assertEqual(read_response.status_code, status.HTTP_200_OK)
+
+        # Verify the returned data matches the original data
+        read_account = read_response.get_json()
+        self.assertEqual(read_account["name"], account_data["name"])
+        self.assertEqual(read_account["email"], account_data["email"])
+        self.assertEqual(read_account["address"], account_data["address"])
+        self.assertEqual(read_account["phone_number"], account_data["phone_number"])
+        self.assertEqual(read_account["date_joined"], account_data["date_joined"])
+
+
+
+
+
