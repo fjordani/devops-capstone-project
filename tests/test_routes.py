@@ -158,6 +158,17 @@ class TestAccountService(TestCase):
         self.assertEqual(read_account["phone_number"], account_data["phone_number"])
         self.assertEqual(read_account["date_joined"], account_data["date_joined"])
 
+    def test_get_account_list(self):
+        """It should Get a list of Accounts"""
+        self._create_accounts(5)
+        # send a self.client.get() request to the BASE_URL
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # get the data from resp.get_json()
+        data = response.get_json()
+        # assert that the len() of the data is 5 (the number of accounts you created)
+        self.assertEqual(len(data), 5)
+
 
 
 
