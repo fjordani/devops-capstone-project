@@ -169,6 +169,27 @@ class TestAccountService(TestCase):
         # assert that the len() of the data is 5 (the number of accounts you created)
         self.assertEqual(len(data), 5)
 
+    def test_update_account(self):
+        """It should Update an existing Account"""
+        # create an Account to update
+        test_account = AccountFactory()
+        response = self.client.post(BASE_URL, json=test_account.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # get the data from resp.get_json() as new_account
+        new_account = response.get_json()
+
+        # update the account
+        new_account["name"] = "Updated Name"
+        response = self.client.put(f"{BASE_URL}/{new_account['id']}", json=new_account)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # get the data from resp.get_json() as updated_account
+        updated_account = response.get_json()
+
+        # assert that the updated_account["name"] is whatever you changed it to
+        self.assertEqual(updated_account["name"], "Updated Name")
+
 
 
 
