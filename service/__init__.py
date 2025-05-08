@@ -9,6 +9,7 @@ from flask import Flask
 from service import config
 from service.common import log_handlers
 from flask_talisman import Talisman
+from flask_cors import CORS
 
 # Create Flask application
 app = Flask(__name__)
@@ -16,6 +17,9 @@ app.config.from_object(config)
 
 # Ensure Talisman is applied to the app instance
 talisman = Talisman(app)
+
+# Enable CORS for all routes
+CORS(app)
 
 # Log Talisman initialization
 app.logger.info("Talisman security headers initialized.")
