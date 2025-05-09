@@ -1,29 +1,17 @@
-FROM python:3.9-slim-bullseye
+FROM python:3.9-slim
 
-# Install system dependencies, including a compatible version of libpq
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set the working directory
+# Create working folder and install dependencies
 WORKDIR /app
-
-# Copy the requirements file and install dependencies
-COPY requirements.txt /app/
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the service package into the working directory
-COPY service /app/service
+# Copy the application contents
+COPY service/ ./service/
 
-# Create a non-root user and set permissions
+# Switch to a non-root user
 RUN useradd --uid 1000 theia && chown -R theia /app
-
-# Switch to the non-root user
 USER theia
 
-# Expose the application port
+# Run the service
 EXPOSE 8080
-
-# Set the entry point to Gunicorn
 CMD ["gunicorn", "--bind=0.0.0.0:8080", "--log-level=info", "service:app"]
