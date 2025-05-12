@@ -7,7 +7,6 @@ Test cases can be run with the following:
 """
 import os
 import logging
-import unittest
 from unittest import TestCase
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
@@ -127,7 +126,7 @@ class TestAccountService(TestCase):
             json=account.serialize(),
             content_type="test/html"
         )
-        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)   
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     def test_account_not_found(self):
         """It should return 404_NOT_FOUND when account does not exist"""
@@ -203,13 +202,12 @@ class TestAccountService(TestCase):
         # assert that the resp.status_code is status.HTTP_204_NO_CONTENT
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-
     def test_method_not_allowed(self):
-            """It should not allow an illegal method call"""
-            # call self.client.delete() on the BASE_URL
-            response = self.client.delete(BASE_URL)
-            # assert that the resp.status_code is status.HTTP_405_METHOD_NOT_ALLOWED
-            self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        """It should not allow an illegal method call"""
+        # call self.client.delete() on the BASE_URL
+        response = self.client.delete(BASE_URL)
+        # assert that the resp.status_code is status.HTTP_405_METHOD_NOT_ALLOWED
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_https_headers(self):
         """It should return the correct HTTPS headers"""
@@ -236,5 +234,3 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check for the CORS header
         self.assertEqual(response.headers.get('Access-Control-Allow-Origin'), '*')
-
-
