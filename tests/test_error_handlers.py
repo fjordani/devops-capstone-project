@@ -19,11 +19,11 @@ import unittest
 from unittest.mock import patch
 from service import app
 from service.common import status
-from service.models import DataValidationError
 from service import talisman
 
 class TestErrorHandlers(unittest.TestCase):
     """Test Cases for Error Handlers"""
+
 
     def setUp(self):
         """Runs before each test"""
